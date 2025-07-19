@@ -37,8 +37,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  console.log('ECOMER_PORT:', process.env.ECOMER_PORT);
-
   await app.listen(process.env.ECOMER_PORT ?? 3000);
 }
 bootstrap();

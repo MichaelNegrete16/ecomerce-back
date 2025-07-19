@@ -4,6 +4,7 @@ import {
   ICreatePaymentSourceRequest,
   ICreatePaymentSourceResponse,
   ICReateTransactionCofRequest,
+  ICreateTransactionResponse,
   IGetMerchantsResponse,
 } from '../entities/merchants.entites';
 
@@ -13,5 +14,7 @@ export interface MerchantsPort {
   postCreatePaymentSource(
     payload: ICreatePaymentSourceRequest,
   ): Promise<ICreatePaymentSourceResponse>;
-  postCreateTransactionCof(payload: ICReateTransactionCofRequest): Promise<any>;
+  postCreateTransactionCof(
+    payload: ICReateTransactionCofRequest,
+  ): Promise<ICreateTransactionResponse>;
 }

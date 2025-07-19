@@ -120,3 +120,43 @@ export interface ICReateTransactionCofRequest {
   reference: string; // Referencia única de pago
   payment_source_id: number | undefined; // ID de la fuente de pago
 }
+
+export interface ICreateTransactionResponse {
+  data: {
+    id: string;
+    created_at: string;
+    finalized_at: string | null;
+    amount_in_cents: number;
+    reference: string;
+    customer_email: string;
+    currency: string;
+    payment_method_type: string;
+    payment_method: {
+      type: string;
+      extra: {
+        bin: string;
+        name: string;
+        brand: string;
+        exp_year: string;
+        card_type: string;
+        exp_month: string;
+        last_four: string;
+        card_holder: string;
+        is_three_ds: boolean;
+        three_ds_auth_type: string | null;
+      };
+      installments: number;
+    };
+    status: string;
+    status_message: string | null;
+    billing_data: Record<string, unknown> | null;
+    shipping_address: Record<string, unknown> | null;
+    redirect_url: string | null;
+    payment_source_id: number;
+    payment_link_id: string | null;
+    customer_data: Record<string, unknown> | null;
+    bill_id: string | null;
+    taxes: Record<string, unknown>[];
+    tip_in_cents: number | null;
+  };
+}

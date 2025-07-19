@@ -7,6 +7,7 @@ import {
   ICreatePaymentSourceResponse,
   ICReateTransactionCofRequest,
   ICReateTransactionRequest,
+  ICreateTransactionResponse,
   IGetDataMerchant,
 } from '../dominio/entities/merchants.entites';
 
@@ -67,7 +68,9 @@ export class MerchantsCaseUse {
     }
   }
 
-  async createTransactionCof(payload: ICReateTransactionCofRequest) {
+  async createTransactionCof(
+    payload: ICReateTransactionCofRequest,
+  ): Promise<ICreateTransactionResponse> {
     try {
       const response =
         await this.merchantsPort.postCreateTransactionCof(payload);
@@ -82,7 +85,9 @@ export class MerchantsCaseUse {
     }
   }
 
-  async CreateTransaction(payload: ICReateTransactionRequest): Promise<any> {
+  async CreateTransaction(
+    payload: ICReateTransactionRequest,
+  ): Promise<ICreateTransactionResponse> {
     try {
       const formatDataCard = {
         number: payload.number,
@@ -125,7 +130,7 @@ export class MerchantsCaseUse {
         payment_method: {
           installments: 2, // Número de cuotas si la fuente de pago representa una tarjeta de lo contrario el campo payment_method puede ser ignorado.
         },
-        reference: responseSignature, // Referencia única de pago
+        reference: reference, // Referencia única de pago
         payment_source_id: response?.data.id, // ID de la fuente de pago
       };
 
