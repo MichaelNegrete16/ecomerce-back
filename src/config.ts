@@ -2,6 +2,7 @@ import { ConfigService, registerAs } from '@nestjs/config';
 import { config as dotenvConfig } from 'dotenv';
 
 const env = dotenvConfig({ path: `.env.${process.env.NODE_ENV}` });
+console.log('rocess.env.NODE_ENV', process.env.NODE_ENV);
 
 const configService = new ConfigService({ load: [() => env] });
 
@@ -26,7 +27,7 @@ export const database = {
 
 export const config = {
   database,
-  NODE_ENV: configService.get<string>('NODE_ENV'),
+  node_env: configService.get<string>('NODE_ENV'),
   ECOMER_PORT: configService.get<string>('ECOMER_PORT'),
   ECOMER_API_SAMBOX: configService.get<string>('ECOMER_API_SAMBOX'),
   ECOMER_PUBLI: configService.get<string>('ECOMER_PUBLI'),
