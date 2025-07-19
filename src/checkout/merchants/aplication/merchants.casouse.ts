@@ -78,7 +78,7 @@ export class MerchantsCaseUse {
 
       return response;
     } catch (error) {
-      console.log('Error in createTransactionCof:', error);
+      console.log('Error in createTransactionCof:', error.message);
       throw new HttpException(
         'Error al crear la transacción COF',
         HttpStatus.BAD_REQUEST,
@@ -118,6 +118,18 @@ export class MerchantsCaseUse {
       const responseSignature = await this.createSignature(
         createValuesSignature,
       );
+
+      console.log({
+        amount_in_cents: payload.amount_in_cents,
+        currency: 'COP',
+        signature: responseSignature,
+        customer_email: payload.customer_email,
+        payment_method: {
+          installments: 2,
+        },
+        reference: reference,
+        payment_source_id: response?.data.id,
+      });
 
       const responseTransaction = await this.createTransactionCof({
         amount_in_cents: payload.amount_in_cents,

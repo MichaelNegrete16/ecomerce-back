@@ -56,6 +56,8 @@ export class MerchanstsRepository implements MerchantsPort {
     payload: ICreatePaymentSourceRequest,
   ): Promise<ICreatePaymentSourceResponse> {
     try {
+      console.log(payload, 'payload in postCreatePaymentSource');
+
       const response = await axios.post<ICreatePaymentSourceResponse>(
         `${process.env.ECOMER_API_SAMBOX}/payment_sources`,
         payload,
