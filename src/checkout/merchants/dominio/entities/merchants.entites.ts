@@ -39,3 +39,84 @@ export interface IDataMerchants {
 export interface IGetMerchantsResponse {
   data: IDataMerchants;
 }
+export interface IGetDataMerchant {
+  presigned_acceptance: {
+    acceptance_token: string;
+    permalink: string;
+    type: string;
+  };
+  presigned_personal_data_auth: {
+    acceptance_token: string;
+    permalink: string;
+    type: string;
+  };
+}
+export interface ICreateCardRequest {
+  number: string; // Número de tarjeta (como un string, sin espacios)
+  exp_month: string; // Mes de expiración (como string de 2 dígitos)
+  exp_year: string; // Año de expiración (como string de 2 dígitos)
+  cvc: string; // Código de seguridad (como string de 3 o 4 dígitos)
+  card_holder: string; // Nombre del tarjeta habiente (string de mínimo 5 caracteres)
+}
+
+export interface ICreatePaymentSourceRequest {
+  type: string;
+  token: string;
+  customer_email: string;
+  acceptance_token: string;
+  accept_personal_auth: string;
+}
+
+export interface ICreatePaymentSourceResponse {
+  data: {
+    id: number;
+    public_data: {
+      type: string;
+    };
+    type: string;
+    status: string;
+  };
+}
+
+export interface ICReateTransactionRequest {
+  number: string;
+  exp_month: string;
+  exp_year: string;
+  cvc: string;
+  card_holder: string;
+  customer_email: string;
+  acceptance_token: string;
+  accept_personal_auth: string;
+  amount_in_cents: number; // Monto current centavos
+  currency: string; // Moneda
+}
+
+export interface ICreateCardResponse {
+  status: string;
+  data: {
+    id: string;
+    created_at: string;
+    brand: string;
+    name: string;
+    last_four: string;
+    bin: string;
+    exp_year: string;
+    exp_month: string;
+    card_holder: string;
+    created_with_cvc: true;
+    expires_at: string;
+    validity_ends_at: string;
+  };
+}
+
+export interface ICReateTransactionCofRequest {
+  amount_in_cents: number; // Monto current centavos
+  currency: string; // Moneda
+  signature: string; //Firma de integridad
+  customer_email: string; // Email del usuario
+  payment_method: {
+    installments: number; // Número de cuotas si la fuente de pago representa una tarjeta de lo contrario el campo payment_method puede ser ignorado.
+  };
+  reference: string; // Referencia única de pago
+  payment_source_id: number | undefined; // ID de la fuente de pago
+}
