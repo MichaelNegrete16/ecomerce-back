@@ -23,9 +23,6 @@ export class MerchantPaymentModel implements IMerchantPaymentModel {
   @Column({ type: 'jsonb' })
   payment_method: any;
 
-  @Column({ type: 'jsonb' })
-  payment_source: any;
-
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount_in_cents: number;
 

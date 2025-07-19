@@ -162,16 +162,15 @@ export interface ICreateTransactionResponse {
 }
 
 export interface IMerchantPaymentModel {
-  id: number;
+  id?: number;
   reference: string;
   status: string;
   status_message: string | null;
   payment_method: Record<string, unknown>;
-  payment_source: Record<string, unknown>;
   amount_in_cents: number;
   currency: string;
   customer_email: string | null;
   payment_link_id: string | null;
   bill_id: string | null;
-  created_at: Date;
+  created_at?: Date;
 }

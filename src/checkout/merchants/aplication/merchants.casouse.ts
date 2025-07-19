@@ -9,6 +9,7 @@ import {
   ICReateTransactionRequest,
   ICreateTransactionResponse,
   IGetDataMerchant,
+  IMerchantPaymentModel,
 } from '../dominio/entities/merchants.entites';
 
 export class MerchantsCaseUse {
@@ -87,17 +88,15 @@ export class MerchantsCaseUse {
 
   async CreateTransaction(
     payload: ICReateTransactionRequest,
-  ): Promise<ICreateTransactionResponse> {
+  ): Promise<IMerchantPaymentModel> {
     try {
-      const formatDataCard = {
+      const responseCard = await this.createValidateCard({
         number: payload.number,
         exp_month: payload.exp_month,
         exp_year: payload.exp_year,
         cvc: payload.cvc,
         card_holder: payload.card_holder,
-      };
-
-      const responseCard = await this.createValidateCard(formatDataCard);
+      });
       if (!responseCard?.data?.id) {
         throw new HttpException(
           'Error al crear la tarjeta, verifique los datos',
@@ -105,15 +104,13 @@ export class MerchantsCaseUse {
         );
       }
 
-      const formatDataPaymentSource = {
+      const response = await this.createPaymentSource({
         type: 'CARD',
         token: responseCard.data.id,
         customer_email: payload.customer_email,
         acceptance_token: payload.acceptance_token,
         accept_personal_auth: payload.accept_personal_auth,
-      };
-
-      const response = await this.createPaymentSource(formatDataPaymentSource);
+      });
       const reference = `ECORM${Date.now()}${response?.data.id}`;
       const amount = payload.amount_in_cents;
       const key = process.env.ECOMER_INTEGRIDAD;
@@ -122,23 +119,31 @@ export class MerchantsCaseUse {
         createValuesSignature,
       );
 
-      const formatDataTransaction = {
-        amount_in_cents: payload.amount_in_cents, // Monto current centavos
-        currency: 'COP', // Moneda
-        signature: responseSignature, //Firma de integridad
-        customer_email: payload.customer_email, // Email del usuario
+      const responseTransaction = await this.createTransactionCof({
+        amount_in_cents: payload.amount_in_cents,
+        currency: 'COP',
+        signature: responseSignature,
+        customer_email: payload.customer_email,
         payment_method: {
-          installments: 2, // Número de cuotas si la fuente de pago representa una tarjeta de lo contrario el campo payment_method puede ser ignorado.
+          installments: 2,
         },
-        reference: reference, // Referencia única de pago
-        payment_source_id: response?.data.id, // ID de la fuente de pago
-      };
+        reference: reference,
+        payment_source_id: response?.data.id,
+      });
 
-      const responseTransaction = await this.createTransactionCof(
-        formatDataTransaction,
-      );
+      const saveTransaction = await this.merchantsPort.saveTransaction({
+        reference: reference,
+        status: responseTransaction.data.status,
+        status_message: responseTransaction.data.status_message,
+        payment_method: responseTransaction.data.payment_method,
+        amount_in_cents: responseTransaction.data.amount_in_cents,
+        currency: responseTransaction.data.currency,
+        customer_email: responseTransaction.data.customer_email,
+        payment_link_id: responseTransaction.data.payment_link_id,
+        bill_id: responseTransaction.data.id,
+      });
 
-      return responseTransaction;
+      return saveTransaction;
     } catch (error) {
       console.log('Error in CreateTransaction:', error);
       throw new HttpException(
@@ -157,4 +162,74 @@ export class MerchantsCaseUse {
       .join('');
     return hashHex;
   };
+
+  async getTransactionStatus(transactionId: string): Promise<{
+    currentStatus: string;
+    hasChanged: boolean;
+    originalTransaction: IMerchantPaymentModel | null;
+    updatedTransaction?: ICreateTransactionResponse;
+  }> {
+    try {
+      const savedTransaction =
+        await this.merchantsPort.getTransactionByReference(transactionId);
+
+      if (!savedTransaction) {
+        throw new HttpException(
+          'Transacción no encontrada',
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const currentTransactionStatus =
+        await this.merchantsPort.getTransactionStatus(transactionId);
+
+      const hasChanged =
+        savedTransaction.status !== currentTransactionStatus.data.status;
+
+      if (hasChanged) {
+        await this.merchantsPort.updateTransactionStatus({
+          reference: transactionId,
+          status: currentTransactionStatus.data.status,
+          status_message: currentTransactionStatus.data.status_message,
+          payment_method: currentTransactionStatus.data.payment_method,
+          amount_in_cents: currentTransactionStatus.data.amount_in_cents,
+          currency: currentTransactionStatus.data.currency,
+          customer_email: currentTransactionStatus.data.customer_email,
+          payment_link_id: currentTransactionStatus.data.payment_link_id,
+          bill_id: currentTransactionStatus.data.id,
+        });
+
+        return {
+          currentStatus: currentTransactionStatus.data.status,
+          hasChanged: true,
+          originalTransaction: savedTransaction,
+          updatedTransaction: currentTransactionStatus,
+        };
+      }
+
+      return {
+        currentStatus: savedTransaction.status,
+        hasChanged: false,
+        originalTransaction: savedTransaction,
+      };
+    } catch (error) {
+      console.log('Error in getTransactionStatus:', error);
+      throw new HttpException(
+        'Error al consultar el estado de la transacción',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async getPendingTransactions(): Promise<IMerchantPaymentModel[]> {
+    try {
+      return await this.merchantsPort.getTransactionsByStatus('PENDING');
+    } catch (error) {
+      console.log('Error in getPendingTransactions:', error);
+      throw new HttpException(
+        'Error al consultar transacciones pendientes',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }

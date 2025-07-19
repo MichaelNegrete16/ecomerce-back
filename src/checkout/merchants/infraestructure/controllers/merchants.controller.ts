@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -264,5 +264,91 @@ export class MerchantsController {
   })
   async createValidateCard(@Body() payload: ICReateTransactionRequest) {
     return this.merchantsCaseUse.CreateTransaction(payload);
+  }
+
+  @Get('transaction/:transactionId/status')
+  @ApiOperation({
+    summary: 'Consultar estado de una transacción',
+    description:
+      'Consulta el estado actual de una transacción y verifica si ha cambiado desde la última consulta. Útil para implementar polling desde el frontend.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Estado de la transacción consultado exitosamente',
+    schema: {
+      type: 'object',
+      properties: {
+        currentStatus: {
+          type: 'string',
+          example: 'APPROVED',
+          enum: ['PENDING', 'APPROVED', 'DECLINED', 'VOIDED'],
+        },
+        hasChanged: {
+          type: 'boolean',
+          example: true,
+          description: 'Indica si el estado cambió desde la última consulta',
+        },
+        originalTransaction: {
+          type: 'object',
+          description: 'Datos de la transacción guardada en nuestra BD',
+          nullable: true,
+        },
+        updatedTransaction: {
+          type: 'object',
+          description:
+            'Datos actualizados de la transacción (solo si hasChanged=true)',
+          nullable: true,
+        },
+      },
+    },
+  })
+  @ApiBadRequestResponse({
+    description: 'Error al consultar el estado',
+    schema: {
+      type: 'object',
+      properties: {
+        statusCode: { type: 'number', example: 400 },
+        message: {
+          type: 'string',
+          example: 'Error al consultar el estado de la transacción',
+        },
+        error: { type: 'string', example: 'Bad Request' },
+      },
+    },
+  })
+  async getTransactionStatus(@Param() params: { transactionId: string }) {
+    return this.merchantsCaseUse.getTransactionStatus(params.transactionId);
+  }
+
+  @Get('transactions/pending')
+  @ApiOperation({
+    summary: 'Obtener transacciones pendientes',
+    description:
+      'Obtiene todas las transacciones que están en estado PENDING y necesitan verificación de estado.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de transacciones pendientes',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'number', example: 1 },
+          reference: { type: 'string', example: 'ECORM175288726246527977' },
+          status: { type: 'string', example: 'PENDING' },
+          amount_in_cents: { type: 'number', example: 4990000 },
+          currency: { type: 'string', example: 'COP' },
+          customer_email: {
+            type: 'string',
+            example: 'pepito_perez@example.com',
+          },
+          created_at: { type: 'string', format: 'date-time' },
+        },
+      },
+    },
+  })
+  async getPendingTransactions() {
+    return this.merchantsCaseUse.getPendingTransactions();
   }
 }
