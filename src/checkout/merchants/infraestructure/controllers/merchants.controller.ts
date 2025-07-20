@@ -9,14 +9,21 @@ import {
 } from '@nestjs/swagger';
 import { MerchantsCaseUse } from '../../aplication/merchants.casouse';
 import { MerchanstsRepository } from '../repository/merchants.repository';
-import { ICReateTransactionRequest } from '../../dominio/entities/merchants.entites';
+import { ArticleRepository } from 'src/checkout/article/infraestructure/repository/article.repository';
+import { MerchantsDto } from '../dtos/merchant.dtos';
 
 @ApiTags('Merchants')
 @Controller('merchants')
 export class MerchantsController {
   private readonly merchantsCaseUse: MerchantsCaseUse;
-  constructor(readonly merchantsRepository: MerchanstsRepository) {
-    this.merchantsCaseUse = new MerchantsCaseUse(this.merchantsRepository);
+  constructor(
+    readonly merchantsRepository: MerchanstsRepository,
+    readonly articleRepository: ArticleRepository,
+  ) {
+    this.merchantsCaseUse = new MerchantsCaseUse(
+      this.merchantsRepository,
+      this.articleRepository,
+    );
   }
 
   @Get('generate')
@@ -262,7 +269,7 @@ export class MerchantsController {
       },
     },
   })
-  async createValidateCard(@Body() payload: ICReateTransactionRequest) {
+  async createValidateCard(@Body() payload: MerchantsDto) {
     return this.merchantsCaseUse.CreateTransaction(payload);
   }
 

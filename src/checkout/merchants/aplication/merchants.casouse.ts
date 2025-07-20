@@ -11,9 +11,13 @@ import {
   IGetDataMerchant,
   IMerchantPaymentModel,
 } from '../dominio/entities/merchants.entites';
+import { IArticleProductPort } from 'src/checkout/article/dominio/port/article.port';
 
 export class MerchantsCaseUse {
-  constructor(private readonly merchantsPort: MerchantsPort) {}
+  constructor(
+    private readonly merchantsPort: MerchantsPort,
+    private readonly articlePort: IArticleProductPort,
+  ) {}
 
   async getMerchants(): Promise<IGetDataMerchant> {
     try {
@@ -90,6 +94,21 @@ export class MerchantsCaseUse {
     payload: ICReateTransactionRequest,
   ): Promise<IMerchantPaymentModel> {
     try {
+      if (isNaN(payload.id_article)) {
+        throw new HttpException(
+          'ID de artículo inválido',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const article = await this.articlePort.getArticleById(
+        payload.id_article.toString(),
+      );
+
+      if (!article) {
+        throw new HttpException('Artículo no encontrado', HttpStatus.NOT_FOUND);
+      }
+
       const responseCard = await this.createValidateCard({
         number: payload.number,
         exp_month: payload.exp_month,
@@ -119,18 +138,6 @@ export class MerchantsCaseUse {
         createValuesSignature,
       );
 
-      console.log({
-        amount_in_cents: payload.amount_in_cents,
-        currency: 'COP',
-        signature: responseSignature,
-        customer_email: payload.customer_email,
-        payment_method: {
-          installments: 2,
-        },
-        reference: reference,
-        payment_source_id: response?.data.id,
-      });
-
       const responseTransaction = await this.createTransactionCof({
         amount_in_cents: payload.amount_in_cents,
         currency: 'COP',
@@ -158,10 +165,7 @@ export class MerchantsCaseUse {
       return saveTransaction;
     } catch (error) {
       console.log('Error in CreateTransaction:', error);
-      throw new HttpException(
-        'Hubo en error al crear la transacción',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
   }
 

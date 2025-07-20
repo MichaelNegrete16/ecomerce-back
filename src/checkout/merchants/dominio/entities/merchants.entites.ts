@@ -89,6 +89,8 @@ export interface ICReateTransactionRequest {
   accept_personal_auth: string;
   amount_in_cents: number; // Monto current centavos
   currency: string; // Moneda
+  id_article: number; // ID del artículo
+  amount_purchase: number; // Monto de la compra
 }
 
 export interface ICreateCardResponse {
