@@ -78,6 +78,11 @@ export interface ICreatePaymentSourceResponse {
   };
 }
 
+export interface IArtiBuy {
+  id: number;
+  amount: number;
+}
+
 export interface ICReateTransactionRequest {
   number: string;
   exp_month: string;
@@ -89,8 +94,7 @@ export interface ICReateTransactionRequest {
   accept_personal_auth: string;
   amount_in_cents: number; // Monto current centavos
   currency: string; // Moneda
-  id_article: number; // ID del artículo
-  amount_purchase: number; // Monto de la compra
+  articles: IArtiBuy[]; // ID del artículo
 }
 
 export interface ICreateCardResponse {

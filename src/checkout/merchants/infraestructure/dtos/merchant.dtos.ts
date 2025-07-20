@@ -8,7 +8,10 @@ import {
   Min,
   Matches,
 } from 'class-validator';
-import { ICReateTransactionRequest } from '../../dominio/entities/merchants.entites';
+import {
+  IArtiBuy,
+  ICReateTransactionRequest,
+} from '../../dominio/entities/merchants.entites';
 
 export class MerchantsDto implements ICReateTransactionRequest {
   @ApiProperty({
@@ -143,25 +146,10 @@ export class MerchantsDto implements ICReateTransactionRequest {
   currency: string;
 
   @ApiProperty({
-    description: 'ID del artículo que se está comprando',
-    example: 1,
-    minimum: 1,
+    description: 'Lista de artículos que se están comprando',
+    example: [{ id: 1, quantity: 2 }],
+    type: 'array',
   })
-  @IsNumber({}, { message: 'El ID del artículo debe ser un número' })
-  @IsNotEmpty({ message: 'El ID del artículo es requerido' })
-  @Min(1, { message: 'El ID del artículo debe ser mayor a 0' })
-  id_article: number;
-
-  @ApiProperty({
-    description:
-      'Monto total de la compra (puede diferir del monto de la transacción por descuentos, impuestos, etc.)',
-    example: 10,
-    minimum: 1,
-  })
-  @IsNumber({}, { message: 'El monto de la compra debe ser un número' })
-  @IsNotEmpty({ message: 'El monto de la compra es requerido' })
-  @Min(1, {
-    message: 'No se proporciono la cantidad de artículos a comprar',
-  })
-  amount_purchase: number;
+  @IsNotEmpty({ message: 'La lista de artículos es requerida' })
+  articles: IArtiBuy[];
 }

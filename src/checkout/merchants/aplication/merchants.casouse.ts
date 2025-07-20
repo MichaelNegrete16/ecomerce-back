@@ -94,19 +94,36 @@ export class MerchantsCaseUse {
     payload: ICReateTransactionRequest,
   ): Promise<IMerchantPaymentModel> {
     try {
-      if (isNaN(payload.id_article)) {
-        throw new HttpException(
-          'ID de artículo inválido',
-          HttpStatus.BAD_REQUEST,
+      for (const article of payload.articles) {
+        if (isNaN(article.id)) {
+          throw new HttpException(
+            'ID de artículo inválido',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        if (isNaN(article.amount)) {
+          throw new HttpException(
+            'Cantidad de artículo inválida',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        if (article.amount <= 0) {
+          throw new HttpException(
+            'La cantidad del artículo debe ser mayor a cero',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+
+        const result = await this.articlePort.getArticleById(
+          article.id.toString(),
         );
-      }
 
-      const article = await this.articlePort.getArticleById(
-        payload.id_article.toString(),
-      );
-
-      if (!article) {
-        throw new HttpException('Artículo no encontrado', HttpStatus.NOT_FOUND);
+        if (!result) {
+          throw new HttpException(
+            'Artículo no encontrado',
+            HttpStatus.NOT_FOUND,
+          );
+        }
       }
 
       const responseCard = await this.createValidateCard({
@@ -161,6 +178,26 @@ export class MerchantsCaseUse {
         payment_link_id: responseTransaction.data.payment_link_id,
         bill_id: responseTransaction.data.id,
       });
+
+      for (const article of payload.articles) {
+        const articleData = await this.articlePort.getArticleById(
+          article.id.toString(),
+        );
+
+        if (!articleData) {
+          throw new HttpException(
+            'Artículo no encontrado',
+            HttpStatus.NOT_FOUND,
+          );
+        }
+
+        const newStock = articleData.stock - article.amount;
+        const isInStock = newStock > 0;
+        await this.articlePort.updateArticle(article.id.toString(), {
+          stock: newStock,
+          inStock: isInStock,
+        });
+      }
 
       return saveTransaction;
     } catch (error) {
