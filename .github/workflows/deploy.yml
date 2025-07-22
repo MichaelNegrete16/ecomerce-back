@@ -48,6 +48,11 @@ jobs:
         run: |
           cd ../
           tar -czf ecomerce-back.tar.gz ./ecomerce-back
+
+      - name: copiar archivo contruido
+        run: |
+          cd ../
+          cp ecomerce-back.tar.gz ./ecomerce-back
  
       - name: Subir artefacto para el trabajo de despliegue
         uses: actions/upload-artifact@v4
