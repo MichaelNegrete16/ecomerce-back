@@ -98,55 +98,6 @@ Una vez que la aplicación esté ejecutándose, puedes acceder a la documentaci�
 
 **🌐 http://localhost:3000/docs**
 
-### Endpoints principales
-
-#### 🏪 Merchants (Pagos)
-
-- `GET /merchants/generate` - Obtener tokens de aceptación
-- `POST /merchants/create-transaction` - Crear transacción de pago
-- `GET /merchants/transaction/:id/status` - Consultar estado de transacción
-- `GET /merchants/transactions/pending` - Obtener transacciones pendientes
-
-#### 📦 Articles (Productos)
-
-- `GET /articles` - Obtener todos los productos
-- `POST /articles/create` - Crear nuevo producto
-
-## 💳 Guía de uso - Procesamiento de pagos
-
-### 1. Obtener tokens de autorización
-
-```bash
-curl -X GET http://localhost:3000/merchants/generate
-```
-
-### 2. Crear una transacción
-
-```bash
-curl -X POST http://localhost:3000/merchants/create-transaction \
-  -H "Content-Type: application/json" \
-  -d '{
-    "number": "4242424242424242",
-    "exp_month": "06",
-    "exp_year": "29",
-    "cvc": "123",
-    "card_holder": "Pedro Pérez",
-    "customer_email": "pedro@example.com",
-    "acceptance_token": "token_obtenido_paso_1",
-    "accept_personal_auth": "token_obtenido_paso_1",
-    "amount_in_cents": 4990000,
-    "currency": "COP",
-    "id_article": 1,
-    "amount_purchase": 4990000
-  }'
-```
-
-### 3. Consultar estado de transacción
-
-```bash
-curl -X GET http://localhost:3000/merchants/transaction/ECORM123456789/status
-```
-
 ## 🧪 Testing
 
 ```bash
@@ -189,28 +140,14 @@ src/
 
 ## 🚦 Estados de transacciones
 
-- `PENDING` - Transacción creada, esperando confirmación
-- `APPROVED` - Transacción aprobada exitosamente
-- `DECLINED` - Transacción rechazada
-- `VOIDED` - Transacción anulada
+- Transacción creada, esperando confirmación
+- Transacción aprobada exitosamente
+- Transacción rechazada
+- Transacción anulada
 
 ## 🔄 Monitoreo de transacciones
 
 La aplicación incluye un sistema de polling para verificar cambios de estado:
-
-```javascript
-// Ejemplo frontend - Verificar estado cada 5 segundos
-const checkStatus = async (transactionId) => {
-  const response = await fetch(
-    `/api/merchants/transaction/${transactionId}/status`,
-  );
-  const data = await response.json();
-
-  if (data.hasChanged) {
-    console.log('Estado actualizado:', data.currentStatus);
-  }
-};
-```
 
 ## 🐛 Solución de problemas
 
@@ -241,13 +178,10 @@ sudo service postgresql status
 
 Si tienes preguntas o necesitas ayuda:
 
-- 📧 **Email**: michael.negrete@gmail.com
+- 📧 **Email**: michael.negrete16@gmail.com
 - 💬 **Issues**: [GitHub Issues](https://github.com/MichaelNegrete16/ecomerce-back/issues)
 - 📖 **Documentación**: http://localhost:3000/docs
 
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
 ---
 
