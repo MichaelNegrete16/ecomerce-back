@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22' # Asegúrate que coincida con la de tu servidor
-          cache: 'pnpm'
+          cache: 'npm'
         
       - name: Instalar dependencias de pnpm
         run: sudo npm i -g pnpm
