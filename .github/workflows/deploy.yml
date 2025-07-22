@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        run: npm install -g pnpm
  
       - name: Configurar Node.js y pnpm con caché
         uses: actions/setup-node@v4
