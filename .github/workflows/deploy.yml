@@ -99,6 +99,7 @@ jobs:
             
             # 1. Crear el directorio de la nueva aplicación y descomprimir
             echo "INFO: Creando nuevo directorio y descomprimiendo..."
+            sudo rm -rf "/home/proyet/ecomerce-back"
             tar -xzf "/home/proyet/ecomerce-back.tar.gz" -C "/home/proyet/ecomerce-back"
             sudo rm -rf "/home/proyet/ecomerce-back.tar.gz"
  
