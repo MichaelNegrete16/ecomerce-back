@@ -103,7 +103,7 @@ jobs:
             mkdir /home/proyet/ecomerce-back
             tar -xzf /home/proyet/ecomerce-back.tar.gz -C /home/proyet/ecomerce-back
             sudo rm -rf /home/proyet/ecomerce-back.tar.gz
- 
+
             # 2. Reiniciar el servicio con PM2
             echo "INFO: Recargando la aplicación con PM2..."
             cd /home/proyet/ecomerce-back
