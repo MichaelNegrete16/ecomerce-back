@@ -95,26 +95,16 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             set -e # Terminar el script si algún comando falla
- 
-            # Definir directorios
-            APP_DIR="/home/proyet/ecomerce-back"
-            BACKUP_DIR="/home/proyet/versions/ecomerce-back"-$(date +%Y%m%d%H%M%S)"
+
             
-            # 1. Crear backup de la versión anterior (si existe)
-            if [ -d "$APP_DIR" ]; then
-              echo "INFO: Realizando backup de la versión actual en $BACKUP_DIR"
-              sudo mv "$APP_DIR" "$BACKUP_DIR"
-            fi
-            
-            # 2. Crear el directorio de la nueva aplicación y descomprimir
+            # 1. Crear el directorio de la nueva aplicación y descomprimir
             echo "INFO: Creando nuevo directorio y descomprimiendo..."
-            sudo mkdir -p "$APP_DIR"
-            sudo tar -xzf "/home/proyet/ecomerce-back.tar.gz" -C "$APP_DIR"
+            sudo tar -xzf "/home/proyet/ecomerce-back.tar.gz" -C "/home/proyet/ecomerce-back"
             sudo rm "/home/proyet/ecomerce-back.tar.gz"
  
-            # 3. Reiniciar el servicio con PM2
+            # 2. Reiniciar el servicio con PM2
             echo "INFO: Recargando la aplicación con PM2..."
-            cd "$APP_DIR"
+            cd "/home/proyet/ecomerce-back"
             # Intenta recargar la app; si no existe, la inicia.
             # Asegúrate que 'pm2.config.js' esté configurado para usar sudo si es necesario.
             sudo pm2 reload pm2.config.js || sudo pm2 start pm2.config.js
