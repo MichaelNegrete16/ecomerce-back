@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Query } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -273,7 +273,7 @@ export class MerchantsController {
     return this.merchantsCaseUse.CreateTransaction(payload);
   }
 
-  @Get('transaction/:transactionId/status')
+  @Get('transaction/status/:bill_id')
   @ApiOperation({
     summary: 'Consultar estado de una transacción',
     description:
@@ -323,35 +323,115 @@ export class MerchantsController {
       },
     },
   })
-  async getTransactionStatus(@Param() params: { transactionId: string }) {
-    return this.merchantsCaseUse.getTransactionStatus(params.transactionId);
+  async getTransactionStatus(@Param('bill_id') bill_id: string) {
+    return this.merchantsCaseUse.getTransactionStatus(bill_id);
   }
 
   @Get('transactions/pending')
   @ApiOperation({
-    summary: 'Obtener transacciones pendientes',
+    summary: 'Obtener y actualizar transacciones pendientes',
     description:
-      'Obtiene todas las transacciones que están en estado PENDING y necesitan verificación de estado.',
+      'Obtiene todas las transacciones en estado PENDING, verifica automáticamente su estado actual en la API externa y actualiza aquellas que hayan cambiado. Retorna estadísticas del procesamiento y la lista actualizada de transacciones que siguen pendientes.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Lista de transacciones pendientes',
+    description: 'Transacciones pendientes procesadas exitosamente',
     schema: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          id: { type: 'number', example: 1 },
-          reference: { type: 'string', example: 'ECORM175288726246527977' },
-          status: { type: 'string', example: 'PENDING' },
-          amount_in_cents: { type: 'number', example: 4990000 },
-          currency: { type: 'string', example: 'COP' },
-          customer_email: {
-            type: 'string',
-            example: 'pepito_perez@example.com',
-          },
-          created_at: { type: 'string', format: 'date-time' },
+      type: 'object',
+      properties: {
+        total: {
+          type: 'number',
+          example: 5,
+          description: 'Total de transacciones pendientes verificadas',
         },
+        updated: {
+          type: 'number',
+          example: 2,
+          description: 'Número de transacciones que cambiaron de estado',
+        },
+        transactions: {
+          type: 'array',
+          description:
+            'Lista de transacciones que siguen pendientes después de la verificación',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'number', example: 1 },
+              reference: { type: 'string', example: 'ECORM175288726246527977' },
+              status: { type: 'string', example: 'PENDING' },
+              amount_in_cents: { type: 'number', example: 4990000 },
+              currency: { type: 'string', example: 'COP' },
+              customer_email: {
+                type: 'string',
+                example: 'pepito_perez@example.com',
+              },
+              created_at: { type: 'string', format: 'date-time' },
+            },
+          },
+        },
+        statusChanges: {
+          type: 'array',
+          description: 'Lista de cambios de estado detectados',
+          items: {
+            type: 'object',
+            properties: {
+              reference: {
+                type: 'string',
+                example: 'ECORM175288726246527977',
+                description: 'Referencia de la transacción que cambió',
+              },
+              oldStatus: {
+                type: 'string',
+                example: 'PENDING',
+                description: 'Estado anterior',
+              },
+              newStatus: {
+                type: 'string',
+                example: 'APPROVED',
+                description: 'Estado nuevo detectado',
+              },
+            },
+          },
+          example: [
+            {
+              reference: 'ECORM175288726246527977',
+              oldStatus: 'PENDING',
+              newStatus: 'APPROVED',
+            },
+            {
+              reference: 'ECORM175288726246527988',
+              oldStatus: 'PENDING',
+              newStatus: 'DECLINED',
+            },
+          ],
+        },
+      },
+      example: {
+        total: 5,
+        updated: 2,
+        transactions: [
+          {
+            id: 3,
+            reference: 'ECORM175288726246527999',
+            status: 'PENDING',
+            amount_in_cents: 2990000,
+            currency: 'COP',
+            customer_email: 'maria@example.com',
+            created_at: '2025-07-21T10:30:00Z',
+          },
+        ],
+        statusChanges: [
+          {
+            reference: 'ECORM175288726246527977',
+            oldStatus: 'PENDING',
+            newStatus: 'APPROVED',
+          },
+          {
+            reference: 'ECORM175288726246527988',
+            oldStatus: 'PENDING',
+            newStatus: 'DECLINED',
+          },
+        ],
       },
     },
   })

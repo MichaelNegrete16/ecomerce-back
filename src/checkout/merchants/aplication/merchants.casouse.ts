@@ -241,7 +241,7 @@ export class MerchantsCaseUse {
 
       if (hasChanged) {
         await this.merchantsPort.updateTransactionStatus({
-          reference: transactionId,
+          reference: currentTransactionStatus.data.reference,
           status: currentTransactionStatus.data.status,
           status_message: currentTransactionStatus.data.status_message,
           payment_method: currentTransactionStatus.data.payment_method,
@@ -266,7 +266,7 @@ export class MerchantsCaseUse {
         originalTransaction: savedTransaction,
       };
     } catch (error) {
-      console.log('Error in getTransactionStatus:', error);
+      console.log('Error in getTransactionStatus:', error.stack);
       throw new HttpException(
         'Error al consultar el estado de la transacción',
         HttpStatus.BAD_REQUEST,
@@ -276,11 +276,59 @@ export class MerchantsCaseUse {
 
   async getPendingTransactions(): Promise<IMerchantPaymentModel[]> {
     try {
-      return await this.merchantsPort.getTransactionsByStatus('PENDING');
+      const pendingTransactions =
+        await this.merchantsPort.getTransactionsByStatus('PENDING');
+
+      if (pendingTransactions.length > 0) {
+        let updatedCount = 0;
+
+        for (const transaction of pendingTransactions) {
+          try {
+            if (!transaction.bill_id) {
+              console.error(`Transacción sin bill_id: ${transaction.bill_id}`);
+              continue;
+            }
+            const currentTransactionStatus =
+              await this.merchantsPort.getTransactionStatus(
+                transaction.bill_id,
+              );
+            const newStatus = currentTransactionStatus.data.status;
+
+            if (transaction.status !== newStatus) {
+              await this.merchantsPort.updateTransactionStatus({
+                reference: transaction.reference,
+                status: newStatus,
+                status_message: currentTransactionStatus.data.status_message,
+                payment_method: currentTransactionStatus.data.payment_method,
+                amount_in_cents: currentTransactionStatus.data.amount_in_cents,
+                currency: currentTransactionStatus.data.currency,
+                customer_email: currentTransactionStatus.data.customer_email,
+                payment_link_id: currentTransactionStatus.data.payment_link_id,
+                bill_id: transaction.bill_id,
+              });
+
+              transaction.status = newStatus;
+              transaction.status_message =
+                currentTransactionStatus.data.status_message;
+
+              updatedCount++;
+            }
+          } catch (transactionError) {
+            console.error(
+              `Error al verificar transacción ${transaction.bill_id}:`,
+              transactionError,
+            );
+          }
+        }
+      }
+
+      const allTransactions = await this.merchantsPort.getAllTransactions();
+
+      return allTransactions;
     } catch (error) {
       console.log('Error in getPendingTransactions:', error);
       throw new HttpException(
-        'Error al consultar transacciones pendientes',
+        'Error al consultar y actualizar transacciones pendientes',
         HttpStatus.BAD_REQUEST,
       );
     }

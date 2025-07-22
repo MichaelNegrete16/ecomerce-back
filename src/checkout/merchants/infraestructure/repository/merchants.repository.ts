@@ -146,7 +146,7 @@ export class MerchanstsRepository implements MerchantsPort {
   ): Promise<IMerchantPaymentModel> {
     try {
       const existingTransaction = await this.merchantPaymentModel.findOne({
-        where: { bill_id: payload.reference },
+        where: { reference: payload.reference },
       });
 
       if (!existingTransaction) {
@@ -163,7 +163,7 @@ export class MerchanstsRepository implements MerchantsPort {
         await this.merchantPaymentModel.save(existingTransaction);
       return updatedTransaction;
     } catch (error) {
-      console.error('Error in updateTransactionStatus:', error);
+      console.error('Error in updateTransactionStatus:', error.stack);
       throw error;
     }
   }
@@ -179,6 +179,18 @@ export class MerchanstsRepository implements MerchantsPort {
       return transactions;
     } catch (error) {
       console.error('Error in getTransactionsByStatus:', error);
+      throw error;
+    }
+  }
+
+  async getAllTransactions(): Promise<IMerchantPaymentModel[]> {
+    try {
+      const transactions = await this.merchantPaymentModel.find({
+        order: { created_at: 'DESC' },
+      });
+      return transactions;
+    } catch (error) {
+      console.error('Error in getAllTransactions:', error);
       throw error;
     }
   }

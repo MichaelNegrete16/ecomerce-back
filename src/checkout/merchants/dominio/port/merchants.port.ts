@@ -21,8 +21,6 @@ export interface MerchantsPort {
   saveTransaction(
     payload: IMerchantPaymentModel,
   ): Promise<IMerchantPaymentModel>;
-
-  // Nuevos métodos para gestión de transacciones
   getTransactionByReference(
     reference: string,
   ): Promise<IMerchantPaymentModel | null>;
@@ -33,4 +31,5 @@ export interface MerchantsPort {
     payload: IMerchantPaymentModel,
   ): Promise<IMerchantPaymentModel>;
   getTransactionsByStatus(status: string): Promise<IMerchantPaymentModel[]>;
+  getAllTransactions(): Promise<IMerchantPaymentModel[]>;
 }
