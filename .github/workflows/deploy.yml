@@ -32,7 +32,7 @@ jobs:
         run: |
           mkdir deploy_package
           cp -r dist deploy_package/
-          cp package.json pnpm-lock.yaml pm2.config.js tsconfig.json deploy_package/
+          cp ./ deploy_package/
  
       - name: Instalar solo dependencias de producción
         run: |
