@@ -18,6 +18,9 @@ jobs:
         with:
           node-version: '22' # Asegúrate que coincida con la de tu servidor
           cache: 'pnpm'
+        
+      - name: Instalar dependencias de pnpm
+        run: sudo npm i -g pnpm
  
       - name: Instalar dependencias
         run: sudo pnpm install
