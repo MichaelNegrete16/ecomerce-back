@@ -17,16 +17,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22' # Asegúrate que coincida con la de tu servidor
-          cache: 'npm'
-        
-      - name: Instalar dependencias de pnpm
-        run: sudo npm i -g pnpm
+          cache: 'pnpm'
  
       - name: Instalar dependencias
-        run: sudo pnpm install
+        run: pnpm install
  
       - name: Construir la aplicación
-        run: sudo pnpm run build
+        run: pnpm run build
  
       - name: Preparar paquete de despliegue
         run: |
