@@ -1,98 +1,254 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🛒 Ecommerce Backend API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 📋 Descripción
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+API backend para un sistema de ecommerce desarrollada con NestJS que permite la gestión de productos y procesamiento de pagos seguros. El sistema integra pasarelas de pago para transacciones con tarjetas de crédito y débito, además de un catálogo completo de productos.
 
-## Description
+## ✨ Características
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- 🔐 **Procesamiento seguro de pagos** con integración a pasarelas de pago
+- 📦 **Gestión completa de productos** (CRUD de artículos)
+- 💳 **Soporte para tarjetas** de crédito y débito
+- 🔍 **Consulta de estado de transacciones** en tiempo real
+- 📊 **Documentación automática** con Swagger/OpenAPI
+- ✅ **Validación robusta** de datos de entrada
+- 🏗️ **Arquitectura hexagonal** (Clean Architecture)
+- 📝 **Logs detallados** para auditoría y debugging
 
-## Project setup
+## 🛠️ Tecnologías
 
-```bash
-$ pnpm install
-```
+- **Framework**: NestJS
+- **Lenguaje**: TypeScript
+- **Base de datos**: TypeORM (PostgreSQL recomendado)
+- **Documentación**: Swagger/OpenAPI
+- **Validación**: class-validator
+- **Testing**: Jest
+- **Gestión de paquetes**: pnpm
 
-## Compile and run the project
+## 🚀 Instalación y configuración
 
-```bash
-# development
-$ pnpm run start
+### Prerrequisitos
 
-# watch mode
-$ pnpm run start:dev
+- Node.js (v18 o superior)
+- pnpm (recomendado) o npm
+- PostgreSQL (u otra BD compatible con TypeORM)
+- Cuenta en proveedor de pagos
 
-# production mode
-$ pnpm run start:prod
-```
-
-## Run tests
+### 1. Clonar el repositorio
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+git clone https://github.com/MichaelNegrete16/ecomerce-back.git
+cd ecomerce-back
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 2. Instalar dependencias
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+pnpm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 3. Configurar variables de entorno
 
-## Resources
+Crea un archivo `.env.local` en la raíz del proyecto:
 
-Check out a few resources that may come in handy when working with NestJS:
+```env
+# Configuración de puerto del proyecto
+ECOMER_PORT=4000
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Configuración de Base de Datos
+ECOMER_DB_TYPE=postgres
+ECOMER_DB_HOST=localhost
+ECOMER_DB_PORT=5432
+ECOMER_DB_USERNAME=postgres
+ECOMER_DB_PASSWORD=tu_password
+ECOMER_DB_DATABASE=ecommerce_db
 
-## Support
+# Configuración de Pagos
+ECOMER_API_SAMBOX=url_api_key
+ECOMER_PUBLI=pub_test_tu_clave_publica_aqui
+ECOMER_PRIVATE=prv_test_tu_clave_privada_aqui
+ECOMER_INTEGRIDAD=test_integrity_key_aqui
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### 4. Configurar base de datos
 
-## Stay in touch
+```bash
+# Asegúrate de que PostgreSQL esté ejecutándose
+# Crea la base de datos
+createdb ecommerce_db
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 5. Ejecutar la aplicación
 
-## License
+```bash
+# Modo desarrollo
+pnpm run start:local
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Modo producción
+pnpm run start:prod
+```
+
+La API estará disponible en el puerto configurado en el .env.local o en su defecto en: `http://localhost:3000`
+
+## 📚 Documentación de la API
+
+### Swagger UI
+
+Una vez que la aplicación esté ejecutándose, puedes acceder a la documentación interactiva en:
+
+**🌐 http://localhost:3000/docs**
+
+### Endpoints principales
+
+#### 🏪 Merchants (Pagos)
+
+- `GET /merchants/generate` - Obtener tokens de aceptación
+- `POST /merchants/create-transaction` - Crear transacción de pago
+- `GET /merchants/transaction/:id/status` - Consultar estado de transacción
+- `GET /merchants/transactions/pending` - Obtener transacciones pendientes
+
+#### 📦 Articles (Productos)
+
+- `GET /articles` - Obtener todos los productos
+- `POST /articles/create` - Crear nuevo producto
+
+## 💳 Guía de uso - Procesamiento de pagos
+
+### 1. Obtener tokens de autorización
+
+```bash
+curl -X GET http://localhost:3000/merchants/generate
+```
+
+### 2. Crear una transacción
+
+```bash
+curl -X POST http://localhost:3000/merchants/create-transaction \
+  -H "Content-Type: application/json" \
+  -d '{
+    "number": "4242424242424242",
+    "exp_month": "06",
+    "exp_year": "29",
+    "cvc": "123",
+    "card_holder": "Pedro Pérez",
+    "customer_email": "pedro@example.com",
+    "acceptance_token": "token_obtenido_paso_1",
+    "accept_personal_auth": "token_obtenido_paso_1",
+    "amount_in_cents": 4990000,
+    "currency": "COP",
+    "id_article": 1,
+    "amount_purchase": 4990000
+  }'
+```
+
+### 3. Consultar estado de transacción
+
+```bash
+curl -X GET http://localhost:3000/merchants/transaction/ECORM123456789/status
+```
+
+## 🧪 Testing
+
+```bash
+# Tests unitarios
+pnpm run test
+
+# Tests e2e
+pnpm run test:e2e
+
+# Cobertura de tests
+pnpm run test:cov
+```
+
+## 🗃️ Estructura del proyecto
+
+```
+src/
+├── app.module.ts              # Módulo principal
+├── config.ts                  # Configuración de la app
+├── main.ts                    # Punto de entrada
+└── checkout/                  # Módulo de checkout
+    ├── checkout.module.ts
+    ├── article/               # Módulo de artículos
+    │   ├── aplication/        # Casos de uso
+    │   ├── dominio/          # Entidades y puertos
+    │   └── infraestructure/   # Controllers, repos, DTOs
+    └── merchants/             # Módulo de pagos
+        ├── aplication/        # Casos de uso
+        ├── dominio/          # Entidades y puertos
+        └── infraestructure/   # Controllers, repos, DTOs
+```
+
+## 🔒 Seguridad
+
+- ✅ Validación exhaustiva de datos de entrada
+- ✅ Sanitización de información sensible en logs
+- ✅ Manejo seguro de tokens de autenticación
+- ✅ Encriptación de datos sensibles
+- ⚠️ **IMPORTANTE**: Nunca exponer claves privadas en el frontend
+
+## 🚦 Estados de transacciones
+
+- `PENDING` - Transacción creada, esperando confirmación
+- `APPROVED` - Transacción aprobada exitosamente
+- `DECLINED` - Transacción rechazada
+- `VOIDED` - Transacción anulada
+
+## 🔄 Monitoreo de transacciones
+
+La aplicación incluye un sistema de polling para verificar cambios de estado:
+
+```javascript
+// Ejemplo frontend - Verificar estado cada 5 segundos
+const checkStatus = async (transactionId) => {
+  const response = await fetch(
+    `/api/merchants/transaction/${transactionId}/status`,
+  );
+  const data = await response.json();
+
+  if (data.hasChanged) {
+    console.log('Estado actualizado:', data.currentStatus);
+  }
+};
+```
+
+## 🐛 Solución de problemas
+
+### Error de conexión a base de datos
+
+```bash
+# Verificar que PostgreSQL esté ejecutándose
+sudo service postgresql status
+
+# Verificar configuración en .env.local
+```
+
+### Error en tokens de pago
+
+```bash
+# Verificar que las credenciales del proveedor sean correctas
+# Confirmar que uses el ambiente correcto (sandbox/production)
+```
+
+### Error en validaciones
+
+```bash
+# Revisar la documentación Swagger para formatos correctos
+# Verificar que todos los campos requeridos estén presentes
+```
+
+## 📞 Soporte
+
+Si tienes preguntas o necesitas ayuda:
+
+- 📧 **Email**: michael.negrete@gmail.com
+- 💬 **Issues**: [GitHub Issues](https://github.com/MichaelNegrete16/ecomerce-back/issues)
+- 📖 **Documentación**: http://localhost:3000/docs
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+---
+
+**⚡ ¡Desarrollado con ❤️ por Michael Negrete!**
