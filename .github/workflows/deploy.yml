@@ -24,8 +24,8 @@ jobs:
 
       - name: Crear archivo .env.prod en el paquete
         run: |
-          cd deploy_package
-          echo "ECOMER_DB_TYPE=${{ secrets.ECOMER_DB_TYPE }}" > .env.prod
+          touch .env.prod 
+          echo "ECOMER_DB_TYPE=${{ secrets.ECOMER_DB_TYPE }}" >> .env.prod
           echo "ECOMER_DB_HOST=${{ secrets.ECOMER_DB_HOST }}" >> .env.prod
           echo "ECOMER_DB_PORT=${{ secrets.ECOMER_DB_PORT }}" >> .env.prod
           echo "ECOMER_DB_USERNAME=${{ secrets.ECOMER_DB_USERNAME }}" >> .env.prod
