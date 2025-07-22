@@ -99,15 +99,15 @@ jobs:
             
             # 1. Crear el directorio de la nueva aplicación y descomprimir
             echo "INFO: Creando nuevo directorio y descomprimiendo..."
-            sudo tar -xzf "/home/proyet/ecomerce-back.tar.gz" -C "/home/proyet/ecomerce-back"
-            sudo rm "/home/proyet/ecomerce-back.tar.gz"
+            tar -xzf "/home/proyet/ecomerce-back.tar.gz" -C "/home/proyet/ecomerce-back"
+            sudo rm -rf "/home/proyet/ecomerce-back.tar.gz"
  
             # 2. Reiniciar el servicio con PM2
             echo "INFO: Recargando la aplicación con PM2..."
             cd "/home/proyet/ecomerce-back"
             # Intenta recargar la app; si no existe, la inicia.
             # Asegúrate que 'pm2.config.js' esté configurado para usar sudo si es necesario.
-            sudo pm2 reload pm2.config.js || sudo pm2 start pm2.config.js
-            sudo pm2 save
+            pm2 reload pm2.config.js || pm2 start pm2.config.js
+            pm2 save
             
             echo "✅ Despliegue completado."
