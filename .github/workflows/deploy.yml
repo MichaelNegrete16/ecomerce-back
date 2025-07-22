@@ -20,10 +20,10 @@ jobs:
           cache: 'pnpm'
  
       - name: Instalar dependencias
-        run: pnpm install
+        run: sudo pnpm install
  
       - name: Construir la aplicación
-        run: pnpm run build
+        run: sudo pnpm run build
  
       - name: Preparar paquete de despliegue
         run: |
@@ -34,7 +34,7 @@ jobs:
       - name: Instalar solo dependencias de producción
         run: |
           cd deploy_package
-          pnpm install 
+          sudo pnpm install 
  
       - name: Crear archivo .env.prod en el paquete
         run: |
