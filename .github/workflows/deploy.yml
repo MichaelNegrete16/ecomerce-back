@@ -109,7 +109,6 @@ jobs:
              cd /home/proyet/ecomerce-back
              # Intenta recargar la app; si no existe, la inicia.
              # Asegúrate que 'pm2.config.js' esté configurado para usar sudo si es necesario.
-             pm2 reload pm2.config.js && pm2 save
+             pm2 reload pm2.config.js
             
-             
              echo "✅ Despliegue completado."
