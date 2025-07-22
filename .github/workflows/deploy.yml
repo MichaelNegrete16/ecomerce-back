@@ -21,24 +21,7 @@ jobs:
         with:
           node-version: '22' # Asegúrate que coincida con la de tu servidor
           cache: 'pnpm'
- 
-      - name: Instalar dependencias
-        run: pnpm install
- 
-      - name: Construir la aplicación
-        run: pnpm run build
- 
-      - name: Preparar paquete de despliegue
-        run: |
-          mkdir deploy_package
-          cp -r dist deploy_package/
-          cp ./ deploy_package/
- 
-      - name: Instalar solo dependencias de producción
-        run: |
-          cd deploy_package
-          sudo pnpm install 
- 
+
       - name: Crear archivo .env.prod en el paquete
         run: |
           cd deploy_package
@@ -54,11 +37,17 @@ jobs:
           echo "ECOMER_PRIVATE=${{ secrets.ECOMER_PRIVATE }}" >> .env.prod
           echo "ECOMER_EVENT=${{ secrets.ECOMER_EVENT }}" >> .env.prod
           echo "ECOMER_INTEGRIDAD=${{ secrets.ECOMER_INTEGRIDAD }}" >> .env.prod
+ 
+      - name: Instalar dependencias
+        run: pnpm install
+ 
+      - name: Construir la aplicación
+        run: pnpm run build
           
       - name: Comprimir artefacto para despliegue
         run: |
-          cd deploy_package
-          tar -czf ../ecomerce-back.tar.gz .
+          cd ../
+          tar -czf ecomerce-back.tar.gz ./ecomerce-back
  
       - name: Subir artefacto para el trabajo de despliegue
         uses: actions/upload-artifact@v4
