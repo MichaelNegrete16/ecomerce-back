@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { createHash } from 'crypto';
 import { MerchantsPort } from '../dominio/port/merchants.port';
 import {
   ICreateCardRequest,
@@ -207,13 +208,7 @@ export class MerchantsCaseUse {
   }
 
   createSignature = async (cadena: string) => {
-    const encondedText = new TextEncoder().encode(cadena);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', encondedText);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
-    return hashHex;
+    return createHash('sha256').update(cadena).digest('hex');
   };
 
   async getTransactionStatus(transactionId: string): Promise<{
